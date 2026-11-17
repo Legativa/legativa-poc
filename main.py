@@ -7,6 +7,8 @@ from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.vectorstores import InMemoryVectorStore
+from langchain_ollama import ChatOllama
+from langchain_core.prompts import ChatPromptTemplate
 
 PDF_PATH = Path(__file__).resolve().parent / "documents" / "lgpd.pdf"
 
@@ -59,18 +61,55 @@ def main():
         search_kwargs={"k": 4}
     )
 
-    question = "O que deve acontecer quando ocorre um incidente de segurança envolvendo dados pessoais?"
-
+    question = "Liste apenas os nomes dos dez princípios previstos no art. 6º da LGPD, sem explicar cada um."
+    
     retrieved_docs = retriever.invoke(question)
 
-    print(f"\nPergunta: {question}")
-    print(f"Chunks recuperados: {len(retrieved_docs)}")
-    
-    for index, doc in enumerate(retrieved_docs, start=1):
-        print(f"\n--- Resultado {index} ---")
-        print(f"Página: {doc.metadata['page'] + 1}")
-        print(f"Posição inicial: {doc.metadata.get('start_index')}")
-        print(doc.page_content)
+    prompt = ChatPromptTemplate.from_messages([
+        (
+            "system",
+            """
+            Você é um assistente especializado na LGPD.
+
+            Responda utilizando exclusivamente as informações do contexto fornecido.
+
+            Antes de responder, verifique se o contexto contém todas as
+            informações necessárias para atender à pergunta.
+
+            Regras:
+            - Não invente informações ou dispositivos legais.
+            - Não complete lacunas utilizando conhecimento externo.
+            - Não misture incisos pertencentes a artigos diferentes.
+            - Se o contexto estiver incompleto, apresente somente as
+            informações disponíveis e indique explicitamente a limitação.
+            - Indique os artigos utilizados quando presentes no contexto.
+
+            Contexto:
+            {context}
+            """
+        ),
+        ("human", "{question}")
+    ])
+
+
+    context = "\n\n".join(
+        doc.page_content for doc in retrieved_docs
+    )
+
+    llm = ChatOllama(
+        model="gemma3:4b",
+        temperature=0
+    )
+
+    chain = prompt | llm
+
+    response = chain.invoke({
+        "context": context,
+        "question": question,
+    })
+
+    print("\n--- Resposta da Legativa ---")
+    print(response.content)
 
 if __name__ == "__main__":
     main()
