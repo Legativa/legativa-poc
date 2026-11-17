@@ -43,7 +43,7 @@ A PoC não utilizará API HTTP, interface gráfica, banco de dados persistente o
 
 A figura a seguir apresenta o fluxo geral da PoC, contemplando as etapas de ingestão, recuperação e geração.
 
-![Fluxo RAG da Legativa PoC](images/fluxo-rag.svg)
+![Fluxo RAG da Legativa PoC](images/rag-flow.svg)
 
 ### 4.1. Ingestão e Indexação
 
@@ -75,7 +75,7 @@ A validação será realizada por meio de perguntas selecionadas sobre a LGPD e 
 | **Fundamentação**   | A resposta corresponde às informações presentes no contexto. |
 | **Rastreabilidade** | As fontes e os trechos recuperados podem ser identificados.  |
 
-Os experimentos, resultados e limitações identificadas serão registrados separadamente em `docs/validacao.md`.
+Os experimentos, resultados e limitações identificadas serão registrados separadamente em `docs/experiments.md`.
 
 ## 6. Resultado Esperado
 
