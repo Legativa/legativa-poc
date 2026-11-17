@@ -19,19 +19,24 @@ A base de conhecimento será composta exclusivamente pelo **PDF oficial e atuali
 - **Data de acesso:** 17/11/2026.
 - **Arquivo local:** `documents/lgpd.pdf`.
 
-| Responsabilidade           | Tecnologia                           |
-| -------------------------- | ------------------------------------ |
-| Linguagem                  | Python                               |
-| Orquestração RAG           | LangChain                            |
-| Carregamento de documentos | PyPDFLoader                          |
-| Divisão do texto           | RecursiveCharacterTextSplitter       |
-| Embeddings                 | Modelo acessado por API              |
-| Armazenamento vetorial     | InMemoryVectorStore                  |
-| Recuperação                | Retriever com busca por similaridade |
-| Geração de respostas       | LLM acessada por API                 |
-| Interface                  | Terminal                             |
+| Responsabilidade           | Tecnologia                                       |
+| -------------------------- | ------------------------------------------------ |
+| Linguagem                  | Python                                           |
+| Orquestração RAG           | LangChain                                        |
+| Carregamento de documentos | pypdf + BaseLoader                               |
+| Divisão do texto           | RecursiveCharacterTextSplitter                   |
+| Embeddings                 | HuggingFaceEmbeddings + multilingual-e5-small    |
+| Armazenamento vetorial     | InMemoryVectorStore                              |
+| Recuperação                | Retriever com busca por similaridade             |
+| Geração de respostas       | ChatOllama com Gemma 3 4B                        |  
+| Interface                  | Terminal                                         |
 
-Os modelos e o provedor de IA ainda serão definidos.
+**Configurações adotadas**
+- Chunking com `chunk_size=1000`, `chunk_overlap=150` e `add_start_index=True`.
+- Embeddings de 384 dimensões, executados localmente na CPU.
+- Armazenamento vetorial em memória, reconstruído a cada execução.
+- Geração com `temperature=0` e instruções para utilização do contexto recuperado.
+
 
 A PoC não utilizará API HTTP, interface gráfica, banco de dados persistente ou mecanismos avançados de recuperação. Também não realizará avaliações automatizadas de conformidade nem processará documentos técnicos de sistemas reais.
 
@@ -44,6 +49,7 @@ A PoC não utilizará API HTTP, interface gráfica, banco de dados persistente o
 | **Embedding Model** | Gerar representações vetoriais dos chunks e das consultas. |
 | **Vector Store**    | Armazenar os chunks, embeddings e metadados em memória.    |
 | **Retriever**       | Recuperar os trechos mais relevantes à pergunta.           |
+| **Prompt Template** | Combinar instruções, pergunta e contexto recuperado.       |
 | **LLM**             | Gerar uma resposta utilizando o contexto recuperado.       |
 
 ## 4. Fluxos de Execução
