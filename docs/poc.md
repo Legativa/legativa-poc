@@ -23,7 +23,7 @@ A base de conhecimento será composta exclusivamente pelo **PDF oficial e atuali
 | -------------------------- | ------------------------------------ |
 | Linguagem                  | Python                               |
 | Orquestração RAG           | LangChain                            |
-| Carregamento de documentos | PyPDFLoader                          |
+| Carregamento de documentos | pypdf + BaseLoader                   |
 | Divisão do texto           | RecursiveCharacterTextSplitter       |
 | Embeddings                 | Modelo acessado por API              |
 | Armazenamento vetorial     | InMemoryVectorStore                  |
