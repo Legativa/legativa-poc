@@ -54,16 +54,12 @@ def main():
     )
 
     vector_store = InMemoryVectorStore(embedding=embeddings)
-    ids = vector_store.add_documents(chunks)
+    vector_store.add_documents(chunks)
 
     retriever = vector_store.as_retriever(
         search_type="similarity",
         search_kwargs={"k": 4}
     )
-
-    question = "Liste apenas os nomes dos dez princípios previstos no art. 6º da LGPD, sem explicar cada um."
-    
-    retrieved_docs = retriever.invoke(question)
 
     prompt = ChatPromptTemplate.from_messages([
         (
@@ -91,11 +87,6 @@ def main():
         ("human", "{question}")
     ])
 
-
-    context = "\n\n".join(
-        doc.page_content for doc in retrieved_docs
-    )
-
     llm = ChatOllama(
         model="gemma3:4b",
         temperature=0
@@ -103,13 +94,35 @@ def main():
 
     chain = prompt | llm
 
-    response = chain.invoke({
-        "context": context,
-        "question": question,
-    })
+    print("\nLegativa PoC — Consultas à LGPD")
+    print("Digite 'sair' para encerrar.")
 
-    print("\n--- Resposta da Legativa ---")
-    print(response.content)
+    while True:
+        question = input("\nPergunta: ").strip()
+
+        if question.lower() == "sair":
+            break
+
+        if not question:
+            continue
+
+        retrieved_docs = retriever.invoke(question)
+
+        context = "\n\n".join(
+            doc.page_content for doc in retrieved_docs
+        )
+
+        response = chain.invoke({
+            "context": context,
+            "question": question,
+        })
+
+        print(f"\nResposta:\n{response.content}")
+
+        print("\n--- Fontes recuperadas ---")
+        for index, doc in enumerate(retrieved_docs, start=1):
+            print(f"\n[{index}] Página {doc.metadata['page'] + 1}")
+            print(doc.page_content)
 
 if __name__ == "__main__":
     main()
