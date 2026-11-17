@@ -5,6 +5,8 @@ from pypdf import PdfReader
 from langchain_core.document_loaders import BaseLoader
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_core.vectorstores import InMemoryVectorStore
 
 PDF_PATH = Path(__file__).resolve().parent / "documents" / "lgpd.pdf"
 
@@ -35,16 +37,26 @@ def main():
     )
 
     chunks = splitter.split_documents(documents)
+
+    embeddings = HuggingFaceEmbeddings(
+        model_name="intfloat/multilingual-e5-small",
+        model_kwargs={"device": "cpu"},
+        encode_kwargs={
+            "normalize_embeddings": True,
+            "prompt": "passage: ",
+        },
+        query_encode_kwargs={
+            "normalize_embeddings": True,
+            "prompt": "query: ",
+        }
+    )
+
+    vector_store = InMemoryVectorStore(embedding=embeddings)
+    ids = vector_store.add_documents(chunks)
     
     print(f"Páginas carregadas: {len(documents)}")
     print(f"Chunks gerados {len(chunks)}")
-
-    for index, chunk in enumerate(chunks[:5], start=1):
-        print(f"\n--- Chunk {index} ---")
-        print(f"Página: {chunk.metadata['page'] + 1}")
-        print(f"Posição inicial: {chunk.metadata.get('start_index')}")
-        print(f"Caracteres: {len(chunk.page_content)}")
-        print(chunk.page_content)
+    print(f"Chunks indexados: {len(ids)}")
 
 if __name__ == "__main__":
     main()
