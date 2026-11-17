@@ -53,10 +53,24 @@ def main():
 
     vector_store = InMemoryVectorStore(embedding=embeddings)
     ids = vector_store.add_documents(chunks)
+
+    retriever = vector_store.as_retriever(
+        search_type="similarity",
+        search_kwargs={"k": 4}
+    )
+
+    question = "O que deve acontecer quando ocorre um incidente de segurança envolvendo dados pessoais?"
+
+    retrieved_docs = retriever.invoke(question)
+
+    print(f"\nPergunta: {question}")
+    print(f"Chunks recuperados: {len(retrieved_docs)}")
     
-    print(f"Páginas carregadas: {len(documents)}")
-    print(f"Chunks gerados {len(chunks)}")
-    print(f"Chunks indexados: {len(ids)}")
+    for index, doc in enumerate(retrieved_docs, start=1):
+        print(f"\n--- Resultado {index} ---")
+        print(f"Página: {doc.metadata['page'] + 1}")
+        print(f"Posição inicial: {doc.metadata.get('start_index')}")
+        print(doc.page_content)
 
 if __name__ == "__main__":
     main()
