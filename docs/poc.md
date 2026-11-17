@@ -12,6 +12,13 @@ A solução será implementada como uma aplicação Python simples, utilizando *
 
 A base de conhecimento será composta exclusivamente pelo **PDF oficial e atualizado da Lei nº 13.709/2018 (LGPD)**.
 
+**Fonte documental:**
+- **Órgão:** Câmara dos Deputados.
+- **Documento:** Lei nº 13.709/2018 (texto atualizado)
+- **Origem:** [Legislação atualizada](https://www2.camara.leg.br/legin/fed/lei/2018/lei-13709-14-agosto-2018-787077-normaatualizada-pl.html).
+- **Data de acesso:** 17/11/2026.
+- **Arquivo local:** `documents/lgpd.pdf`.
+
 | Responsabilidade           | Tecnologia                           |
 | -------------------------- | ------------------------------------ |
 | Linguagem                  | Python                               |
