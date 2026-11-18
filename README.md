@@ -2,47 +2,88 @@
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
-![RAG](https://img.shields.io/badge/RAG-4B5563?style=for-the-badge)
 ![PyPDF](https://img.shields.io/badge/PyPDF-3776AB?style=for-the-badge)
+![Hugging Face](https://img.shields.io/badge/Hugging%20Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)
+![Ollama](https://img.shields.io/badge/Ollama-111111?style=for-the-badge&logo=ollama&logoColor=white)
+![Gemma 3](https://img.shields.io/badge/Gemma%203-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![uv](https://img.shields.io/badge/uv-DE5FE9?style=for-the-badge&logo=uv&logoColor=white)
+![RAG](https://img.shields.io/badge/RAG-4B5563?style=for-the-badge)
 
 **Inteligência Artificial para Conformidade à LGPD**
 
 Prova de conceito da **Legativa**, uma plataforma de inteligência artificial voltada ao apoio à adequação de sistemas à Lei Geral de Proteção de Dados (LGPD).
 
-O objetivo é validar um pipeline de *Retrieval-Augmented Generation* (RAG), capaz de recuperar informações da legislação e gerar respostas fundamentadas com suas respectivas fontes.
+O experimento explora um pipeline de *Retrieval-Augmented Generation* (RAG), permitindo realizar consultas à legislação e gerar respostas a partir dos trechos recuperados.
 
 ---
 
 ### Pré-requisitos
 
-![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+[![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)](https://git-scm.com/downloads)
+[![Python 3.12](https://img.shields.io/badge/Python%203.12-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![uv](https://img.shields.io/badge/uv-DE5FE9?style=flat&logo=uv&logoColor=white)](https://docs.astral.sh/uv/getting-started/installation/)
+[![Ollama](https://img.shields.io/badge/Ollama-111111?style=flat&logo=ollama&logoColor=white)](https://ollama.com/download)
 
-### Visão Geral
+A aplicação executa os modelos localmente, sem necessidade de chaves de API.
 
-A PoC será desenvolvida em **Python e LangChain**, utilizando exclusivamente o PDF oficial da LGPD como base de conhecimento.
+### Instalação e execução
 
-O experimento contempla dois fluxos:
+**1. Clone o repositório.**
 
-| Fluxo | Descrição |
-|---|---|
-| **Ingestão e indexação** | Processamento do PDF, geração de embeddings e armazenamento vetorial em memória. |
-| **Consulta e geração** | Recuperação de trechos relevantes e geração de respostas fundamentadas por uma LLM. |
+```bash
+git clone https://github.com/Legativa/legativa-poc.git
+cd legativa-poc
+```
 
-### Observações
+**2. Instale as dependências.**
 
-- **Execução:** via terminal, sem interface gráfica ou banco de dados persistente.
-- **Instalação:** instruções de configuração e execução serão disponibilizadas durante a implementação.
-- **Escopo:** exclusivamente a legislação da LGPD, sem avaliação automatizada de conformidade.
+```bash
+uv sync
+```
+
+**3. Baixe o modelo Gemma 3 pelo Ollama.**
+
+```bash
+ollama pull gemma3:4b
+```
+
+**4. Execute a aplicação.**
+
+Com o Ollama em execução:
+
+```bash
+uv run python main.py
+```
+
+Na primeira execução, o modelo de embeddings `multilingual-e5-small` será baixado automaticamente do Hugging Face.
+
+### Utilização
+
+Após a indexação da LGPD, o terminal ficará disponível para consultas:
+
+```text
+Legativa PoC — Consultas à LGPD
+Digite 'sair' para encerrar.
+
+Pergunta: Quais são os direitos dos titulares?
+
+Resposta:
+...
+
+--- Fontes recuperadas ---
+[1] Página 10
+...
+
+Pergunta: sair
+```
+
+É possível realizar múltiplas consultas sem reiniciar a aplicação. Para encerrar, digite `sair`.
 
 ### Documentação
 
-A documentação complementar estará disponível no diretório [`docs/`](docs/), reunindo o escopo, as decisões técnicas e os resultados de validação da PoC.
-
-### Evolução
-
-Os resultados deste experimento orientarão o desenvolvimento da aplicação principal da **Legativa**, mantida em um repositório independente.
+- [Prova de Conceito](docs/poc.md) — escopo, decisões técnicas e funcionamento do pipeline.
+- [Experimentos](docs/experiments.md) — consultas realizadas e resultados observados.
 
 ---
 
-*Projeto experimental. As respostas geradas não substituem orientação jurídica especializada.*
+*Projeto experimental. As respostas geradas podem conter informações incorretas e não substituem orientação jurídica especializada.*
